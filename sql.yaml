@@ -1,0 +1,2 @@
+preprocessing:
+    location_master: '../sql/location_master.sql'

@@ -1,0 +1,33 @@
+tensorflow:
+    script: "../src/train/tensorflow_template.py"
+    #data: "s3://pske-stg-maintenance/workforce-plan-model/data/model-data/staffing/" # see datasets.yaml processed for path
+    segment: dist_num
+    job_name: staffing-tensorflow
+    metrics:
+        cosine_similarity: "cosine_similarity:(.*?)-"
+        loss: "loss:(.*?)-"
+        categorical_crossentropy: "categorical_crossentropy:(.*?)"
+    hyperparams:
+        batch_size: 64
+        epochs: 
+            range: [1, 2]
+            scaling_type: Auto
+        learning_rate: 
+            range: [0.001, 0.1]
+            scaling_type: Logarithmic
+            
+xgboost:
+    script: "../src/train/xgboost_template.py"
+    # data: "s3://pske-stg-maintenance/workforce-plan-model/data/model-data/shift_loc_1_103/" # see datasets.yaml processed for path
+    job_name: staffing-xgboost
+    metrics:
+        loss: "loss:(.*?)-"
+    hyperparams:
+        batch_size: 64
+        karthik_parameter: 1
+        epochs: 
+            range: [1, 2]
+            scaling_type: Auto
+        learning_rate: 
+            range: [0.001, 0.1]
+            scaling_type: Logarithmic

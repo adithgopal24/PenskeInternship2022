@@ -1,0 +1,42 @@
+bucket: 'pske-stg-advanalytics'
+prefix: 'projects/unitsalesrisk-interns'
+processing_sequence: [raw, interim, processed] # Order is important
+raw:
+    base_query:
+        script: preprocess/template.py
+        input_paths: 's3://pske-stg-advanalytics/Projects/Unit_Sale_Risk_Interns/Data/Athena_query/base_query.txt'
+        input_query: 'select * from ptl_maintenance.rental_util limit 10'
+        output_paths: 's3://pske-stg-advanalytics/Projects/Unit_Sale_Risk_Interns/Data/Interim/base_query/'
+        input_file: '../sql/base_query.txt'
+        input: '../sql/base_query.txt'
+        #input_file: 'Projects/Unit_Sale_Risk_Interns/Data/Athena_query/base_query.txt'
+       
+    engine_hours:
+        script: preprocess/template.py
+        input_paths: 's3://pske-stg-advanalytics/Projects/Unit_Sale_Risk_Interns/Data/Athena_query/engine_hours.txt'
+        input_query: 'select * from ptl_maintenance.rental_util limit 10'
+        output_paths: 's3://pske-stg-advanalytics/Projects/Unit_Sale_Risk_Interns/Data/Interim/engine_hours/'
+        input_file: 'Projects/Unit_Sale_Risk_Interns/Data/Athena_query/engine_hours.txt'
+        input: '../sql/engine_hours.txt'
+    postsaleissue:
+        script: preprocess/template.py
+        input_paths: 's3://pske-stg-advanalytics/Projects/Unit_Sale_Risk_Interns/Data/Athena_query/postsaleissue.txt'
+        input_query: 'select * from ptl_maintenance.rental_util limit 10'
+        output_paths: 's3://pske-stg-advanalytics/Projects/Unit_Sale_Risk_Interns/Data/Interim/postsaleissue/'
+        input_file: 'Projects/Unit_Sale_Risk_Interns/Data/Athena_query/postsaleissue.txt'
+        input: '../sql/postsaleissue.txt'
+    repair_base:
+        script: preprocess/template.py
+        input_paths: 's3://pske-stg-advanalytics/Projects/Unit_Sale_Risk_Interns/Data/Athena_query/repair_base.txt'
+        input_query: 'select * from ptl_maintenance.rental_util limit 10'
+        output_paths: 's3://pske-stg-advanalytics/Projects/Unit_Sale_Risk_Interns/Data/Interim/repair_base/'
+        input_file: '../sql/repair_base.txt'
+        input: '../sql/repair_base.txt'
+        #input_file: 'Projects/Unit_Sale_Risk_Interns/Data/Athena_query/repair_base.txt'
+script:
+    unit: 'src/preprocess/dataCollectionMay31.py'
+    helpers:
+        utils: 'src/helpers/utils.py'
+        s3: 'src/helpers/s3.py'
+        instance: 'src/helpers/instance.py'
+        athena: 'src/helpers/athena.py'

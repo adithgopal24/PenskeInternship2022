@@ -1,0 +1,98 @@
+project: &fc_rules 'unitsalesrisk-intern'
+bucket: "pske-stg-advanalytics"
+prefix: "Projects/Unit_Sale_Risk_Interns/"
+
+tags:
+    processing:
+        - {"Key": "MlOpsStep", "Value": "processing"}
+        - {"Key": "sagemaker:project-name", "Value": *fc_rules }
+        - {"Key": "b_module", "Value": "Unit_Sales_Risk_Interns"}
+        - {"Key": "b_costcenter", "Value": "080410"}
+        - {"Key": "b_env", "Value": "staging"}
+        - {"Key": "b_program", "Value": "internship"}
+        - {"Key": "b_role", "Value": "advanalytics"}
+        - {"Key": "b_service", "Value": "Sagemaker"}
+    modelling:
+        - {"Key": "MlOpsStep", "Value": "modelling"}
+        - {"Key": "sagemaker:project-name", "Value": *fc_rules}
+        - {"Key": "b_module", "Value": "proactive_remote_diagnostics_constellation"}
+        - {"Key": "b_costcenter", "Value": "102810"}
+        - {"Key": "b_env", "Value": "production"}
+        - {"Key": "b_program", "Value": "vehicle_insights"}
+        - {"Key": "b_role", "Value": "model_training"}
+        - {"Key": "b_service", "Value": "Sagemaker"}
+    post_processing:
+        - {"Key": "MlOpsStep", "Value": "post_processing"}
+        - {"Key": "sagemaker:project-name", "Value": *fc_rules}
+        - {"Key": "b_module", "Value": "proactive_remote_diagnostics_constellation"}
+        - {"Key": "b_costcenter", "Value": "102810"}
+        - {"Key": "b_env", "Value": "production"}
+        - {"Key": "b_program", "Value": "vehicle_insights"}
+        - {"Key": "b_role", "Value": "post_processing_job"}
+        - {"Key": "b_service", "Value": "Sagemaker"}
+
+
+network_config:
+    enable_network_isolation: false 
+    security_group_ids: None 
+    subnets: None
+    encrypt_inter_container_traffic: None
+
+
+sklearn_processor:
+    instance_type: "ml.m5.4xlarge"
+    instance_count: 1
+    framework_version: "0.23-1"
+    input_data:
+        destination: "/opt/ml/processing/input"
+    output_data:
+        source: "/opt/ml/processing/output"
+
+
+sklearn_processor_xl:
+    instance_type: "ml.m5.8xlarge"
+    instance_count: 2
+    framework_version: "0.23-1"
+    input_data:
+        destination: "/opt/ml/processing/input"
+    output_data:
+        source: "/opt/ml/processing/output"
+        
+sklearn_processor_xxl:
+    instance_type: "ml.m5.24xlarge"
+    instance_count: 2
+    framework_version: "0.23-1"
+    input_data:
+        destination: "/opt/ml/processing/input"
+    output_data:
+        source: "/opt/ml/processing/output"
+
+
+framework_processor:
+    instance_type: "ml.m5.4xlarge"
+    instance_count: 1
+
+
+spark_processor:
+    instance_type: "ml.m5.xlarge"
+    instance_count: 1
+    framework_version: "2.4"
+
+
+spark_processor_xl:
+    instance_type: "ml.m5.4xlarge"
+    instance_count: 2
+    framework_version: "2.4"
+
+          
+
+                 
+
+             
+
+           
+
+                
+
+          
+

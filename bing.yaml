@@ -1,0 +1,16 @@
+bing_key_1:
+ user_agent: shaq
+ bing_key: VUwnCgmLQhaysUfqnJQb~c89ghTvbgCy6wUGBHi7kFw~AvgZmgaHf6pbv46YKdD6sY2jpfVs8ejwDkVHS0wNmTtVQ67K-NPf2OoyytyZ2dQQ
+
+bing_key_2:
+ user_agent: test
+ bing_key: DcRGlRO1GPe3mF9p0BCG~EbMfPLItqC4_Dh7P4XL_0g~Anyhxb9pThsamWi6eBTd-h2GeSWCOZc4S9v4nmUI3K3-Emq9byXyCTEyD-ez6S9d
+
+past_keys:
+ past_key1:
+  user_agent: test
+  bing_key: Ai7spCGbErwC50Q8KRWdWBpT3Hgw_ElaojXdfpd1p0-6VZh8Rw4TY5bKMjTHqkJq
+
+ past_key2:
+  user_agent: test
+  bing_key: Aj13dgjTia3eWZlE4cteWjFjK4C1q6tFz8I5Iw71JVTIBK-uN51PAtRiKvS7_soJ
