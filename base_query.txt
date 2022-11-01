@@ -1,0 +1,56 @@
+SELECT
+	unit.UNIT_NUM,
+	agg.PARTITION_KEY AS PARTITION_KEY,
+	veh.VEHICLE_AGE_TOTAL_MONTHS,
+	loc.REGN_NUM || '-' || loc.REGN_NM AS REGION,
+	loc.AREA_NUM || '-' || loc.AREA_NM AS AREA,
+	loc.RDIST_NUM || '-' || loc.RDIST_SUFX || '-' || loc.RDIST_NM AS DISTRICT,
+	loc.DIST_NUM || '-' || loc.DIST_SUFX || '-' || loc.DIST_NM AS LOCATION,
+	unit.UNIT_MAKE_CODE,
+	unit.UNIT_MODEL,
+	unit.UNIT_MODEL_YEAR,
+	unit.UNIT_CATEGORY,
+	unit.UNIT_SIZE,
+	unit.UNIT_BODY_TYPE,
+	unit.UNIT_FUEL_TYPE,
+	unit.ACT_VEH_INSERVDT,
+	acc.ACCOUNT_CODE_GROUP1 AS PRODUCT_LINE,
+	unit.UNIT_SOLD_DATE ,
+	'model_build' AS flag_datatype,
+	MAX(agg.LTD_MILES) AS MILES
+FROM
+	ptledw_playarea.F_AGG_UNITCOST_EOM agg
+	JOIN ptledw_playarea.D_UNIT unit ON
+		unit.UNIT_KEY = agg.UNIT_KEY
+	JOIN ptledw_playarea.D_VEHICLE_AGE veh ON
+		agg.ACT_VEHICLE_AGE_KEY = veh.vehicle_age_key
+	JOIN ptledw_playarea.D_ACCOUNT_CODE acc ON
+		agg.ACCOUNT_CODE_KEY = acc.ACCOUNT_CODE_KEY
+	JOIN ptledw_playarea.D_LOCATION_MASTER loc ON
+		agg.LOCATION_MASTER_KEY = loc.LOCATION_MASTER_KEY
+WHERE
+	unit.UNIT_CORP_CD IN ('2000', 'HPTL')
+	AND LTRIM(RTRIM(unit.UNIT_CATEGORY)) IN ('TRUCK', 'TRACTOR', 'TRAILER')
+	AND unit.UNIT_SOLD_DATE BETWEEN DATE '2019-01-01' AND CURRENT_DATE
+GROUP BY
+	unit.UNIT_NUM,
+	agg.PARTITION_KEY,
+	veh.VEHICLE_AGE_TOTAL_MONTHS,
+	loc.REGN_NUM || '-' || loc.REGN_NM,
+	loc.AREA_NUM || '-' || loc.AREA_NM ,
+	loc.RDIST_NUM || '-' || loc.RDIST_SUFX || '-' || loc.RDIST_NM ,
+	loc.DIST_NUM || '-' || loc.DIST_SUFX || '-' || loc.DIST_NM,
+	unit.UNIT_MAKE_CODE,
+	unit.UNIT_MODEL,
+	unit.UNIT_MODEL_YEAR,
+	unit.UNIT_CATEGORY,
+	unit.UNIT_SIZE,
+	unit.UNIT_BODY_TYPE,
+	unit.UNIT_FUEL_TYPE,
+	unit.ACT_VEH_INSERVDT,
+	acc.ACCOUNT_CODE_GROUP1,
+	unit.UNIT_SOLD_DATE
+ORDER BY
+	unit.UNIT_NUM,
+	agg.PARTITION_KEY,
+	veh.VEHICLE_AGE_TOTAL_MONTHS

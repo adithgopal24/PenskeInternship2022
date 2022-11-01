@@ -1,0 +1,49 @@
+SELECT
+	UNIT.UNIT_NUM,
+	job.PARTITION_KEY PARTITION_KEY,
+    SUM(job.LABOR_HOURS) LABOR_HOURS,
+    SUM(job.PARTS_COST) PARTS_COST,
+    SUM(job.LABOR_COST) LABOR_COST,
+    SUM(job.OUTSIDE_COST) OUTSIDE_COST,
+    SUM(CASE
+    		WHEN prof.PROFILE_ID in ('9012','9013','9014','T','G','D1','9359','689','M1','5582','5886',
+                                '686','6436','687','6136','690','STATEINS','1084',
+                                '9465',    '552',    '5701',    '5700',    '6019',    '6345',    '5724',
+                                '9317',    '7830',    '6344') then 1
+            ELSE 0
+        END) AS Major_PM,
+    SUM((CASE
+    		WHEN prof.PROFILE_ID in ('ELEC INJ','5889','9035','6756','8924','A/C COMP','RADASSY','RPLTANK2', 'TURBO' ) or
+    							 ( comp.COMP_CODE in ('041','042','043','044','045','026','027') and (PARTS_COST+LABOR_COST+OUTSIDE_COST) >=800) then 1
+    		ELSE 0
+    	END))AS big_repair,
+	SUM(CASE
+			WHEN comp.COMP_CODE IN ('061','057') THEN 1
+		ELSE 0
+	END ) AS accidentsinci,
+    SUM(CASE
+    		WHEN comp.COMP_CODE NOT IN ('016', '017','002', '011', '016', '017', '019' , '062', '063', '064', '065', '066', '067', '068', '069'
+                     				,'071','072','073','074','075','076','077','078','079','081','082','083','084') THEN 1
+            ELSE 0
+        END) AS total_repairs,
+    'model_build' AS flag_datatype
+FROM     ptledw_playarea.F_JOB_OIL_COST job
+         JOIN ptledw_playarea.D_UNIT unit ON
+         	job.UNIT_KEY= unit.UNIT_KEY
+         JOIN ptledw_playarea.D_COMPONENT_CODE comp ON
+         	job.COMPONENT_KEY= comp.COMP_KEY
+         JOIN ptledw_playarea.D_RO_SOURCE ro ON
+         	job.RO_SOURCE_KEY= ro.RO_SOURCE_KEY
+         JOIN ptledw_playarea.D_ACCOUNT_CODE acc ON
+         	job.ACCOUNT_CODE_KEY= acc.ACCOUNT_CODE_KEY
+         JOIN ptledw_playarea.D_PROFILE_MASTER prof ON
+         	job.PROFILE_MASTER_KEY= prof.PROFILE_MASTER_KEY
+WHERE
+	unit.UNIT_CORP_CD IN ('HPTL','2000')
+	AND unit.UNIT_SOLD_DATE BETWEEN DATE '2019-01-01' AND CURRENT_DATE
+--	AND acc.ACCOUNT_CODE_GROUP1 IN ('LEASE', 'COMMERCIAL RENTAL','CONSUMER RENTAL')
+	AND LTRIM(RTRIM(unit.UNIT_CATEGORY)) IN ('TRUCK', 'TRACTOR', 'TRAILER')
+	AND job.PARTITION_KEY BETWEEN (YEAR(unit.ACT_VEH_INSERVDT)*100+ MONTH(unit.ACT_VEH_INSERVDT)) and (YEAR(unit.UNIT_SOLD_DATE)*100+ MONTH(unit.UNIT_SOLD_DATE))
+	AND ro.RO_SOURCE_CODE = 'ROS'
+GROUP BY unit.UNIT_NUM, job.PARTITION_KEY
+ORDER BY unit.UNIT_NUM, job.PARTITION_KEY

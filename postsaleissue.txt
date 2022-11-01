@@ -1,0 +1,16 @@
+SELECT
+	DISTINCT LTRIM(RTRIM(du.UNIT_NUM)) as unit_num,
+	du.UNIT_SOLD_DATE as unit_sold_date,
+	(du.UNIT_SOLD_DATE + interval '14' day) AS lower_date_range,
+	dwj.WO_CREATED_DATE as wo_created_date,
+	(du.UNIT_SOLD_DATE + interval '90' day) AS upper_date_range
+FROM
+	ptledw_playarea.D_UNIT du
+JOIN ptledw_playarea.F_JOB_OIL_COST fjoc ON
+	fjoc.UNIT_KEY = du.UNIT_KEY
+JOIN ptledw_playarea.D_WO_JOB dwj ON
+	fjoc.WO_JOB_KEY = dwj.WO_JOB_KEY
+WHERE
+	du.UNIT_CATEGORY IN ('TRUCK', 'TRACTOR', 'TRAILER')
+	AND du.UNIT_SOLD_DATE BETWEEN DATE '2019-01-01' AND current_date
+	AND dwj.WO_CREATED_DATE BETWEEN (du.UNIT_SOLD_DATE + interval '14' day) AND (du.UNIT_SOLD_DATE + interval '90' day)

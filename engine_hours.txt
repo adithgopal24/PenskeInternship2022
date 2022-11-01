@@ -1,0 +1,27 @@
+WITH engine AS (
+				SELECT
+					Det.PARTITION_KEY,
+					ltrim(rtrim(unt.UNIT_NUM)) AS UNIT_NUM,
+					Det.UDI_ACTUAL_VALUE,
+					ident.UDI_CODE,
+					ident.UDI_DESCRIPTION
+				FROM
+					ptledw_playarea.F_UNIT_UDI_DETAILS Det
+				LEFT JOIN ptledw_playarea.D_UNIT unt ON
+					det.UNIT_KEY = unt.UNIT_KEY
+				JOIN ptledw_playarea.D_UNIQDEV_IDENT ident ON
+					Det.UDI_KEY = ident.UDI_KEY
+				WHERE
+					ident.UDI_CODE = 10
+					AND ltrim(rtrim(unt.UNIT_NUM)) <> 'UNK'
+				 	AND unt.UNIT_SOLD_DATE BETWEEN DATE '2019-01-01' AND current_date
+				)
+SELECT
+	PARTITION_KEY ,
+	UNIT_NUM ,
+	max(UDI_ACTUAL_VALUE) AS engine_hrs
+FROM
+	engine
+GROUP BY
+    PARTITION_KEY,
+    UNIT_NUM
